@@ -9,6 +9,7 @@ from typing import List, Dict, Optional, Union
 from pathlib import Path
 import logging
 from gtts import gTTS
+from gtts.tts import gTTSError
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -116,11 +117,14 @@ class GTTSEngine:
                 return False
 
             # Create gTTS object
+            # Increase timeout for longer texts (up to 60 seconds)
+            timeout = min(60, max(10, len(text) // 100))  # 10s min, 60s max, scale with length
             tts = gTTS(
                 text=text,
                 lang=self.default_settings['lang'],
                 slow=self.default_settings['slow'],
-                tld=self.default_settings['tld']
+                tld=self.default_settings['tld'],
+                timeout=timeout
             )
 
             logger.info(f"Successfully created TTS for text: {text[:50]}{'...' if len(text) > 50 else ''}")
@@ -139,6 +143,9 @@ class GTTSEngine:
                 logger.warning("Empty text provided for speech")
                 return False
 
+            logger.info(f"Attempting to generate TTS with settings: lang={self.default_settings['lang']}, slow={self.default_settings['slow']}, tld={self.default_settings['tld']}")
+            logger.info(f"Text length: {len(text)} characters")
+
             # Create gTTS object
             tts = gTTS(
                 text=text,
@@ -149,13 +156,17 @@ class GTTSEngine:
 
             # Save to file
             output_path = Path(output_path)
+            logger.info(f"Saving audio to: {output_path}")
             tts.save(str(output_path))
 
-            logger.info(f"Audio saved to: {output_path}")
+            logger.info(f"Audio saved successfully to: {output_path}")
             return True
 
+        except gTTSError as e:
+            logger.error(f"gTTS specific error: {e}")
+            return False
         except Exception as e:
-            logger.error(f"Failed to save audio file: {e}")
+            logger.error(f"Failed to save audio file (general error): {type(e).__name__}: {e}")
             return False
 
     def get_current_settings(self) -> Dict[str, Union[int, float, str]]:

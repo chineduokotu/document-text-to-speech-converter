@@ -5,6 +5,9 @@ Werkzeug==2.3.7
 # gTTS - Free Google Text-to-Speech (no API keys needed!)
 gTTS>=2.5.0
 
+# pyttsx3 - Offline TTS fallback
+pyttsx3>=2.90
+
 # Document Processing
 PyPDF2>=3.0.1
 python-docx>=0.8.11

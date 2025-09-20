@@ -178,13 +178,28 @@ class TTSEngine:
         Note: This requires additional setup and may not work on all systems.
         """
         try:
+            if not text.strip():
+                logger.warning("Empty text provided for speech")
+                return False
+
             output_path = Path(output_path)
+            logger.info(f"Attempting to save TTS to file: {output_path}")
+            logger.info(f"Text length: {len(text)} characters")
+
             self.engine.save_to_file(text, str(output_path))
             self.engine.runAndWait()
-            logger.info(f"Audio saved to: {output_path}")
-            return True
+
+            # Check if file was created
+            if output_path.exists():
+                file_size = output_path.stat().st_size
+                logger.info(f"Audio saved successfully to: {output_path} (size: {file_size} bytes)")
+                return True
+            else:
+                logger.error(f"Audio file was not created: {output_path}")
+                return False
+
         except Exception as e:
-            logger.error(f"Failed to save audio file: {e}")
+            logger.error(f"Failed to save audio file: {type(e).__name__}: {e}")
             return False
     
     def stop_speaking(self) -> None:

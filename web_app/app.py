@@ -27,6 +27,7 @@ except ImportError as e:
     print(f"⚠️ gTTS not available ({e}), falling back to pyttsx3")
     try:
         from tts_engine import TTSEngine
+        print("✅ Using pyttsx3 (offline Text-to-Speech)")
     except ImportError:
         print("❌ No TTS engines available - app will work without voice")
         TTSEngine = None
@@ -190,14 +191,18 @@ def speak_text():
 
         def process_speech():
             try:
+                print(f"Starting speech processing for task {task_id}")  # Debug logging
                 # Create temporary file for audio
                 with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
                     temp_path = temp_file.name
+                print(f"Created temp file: {temp_path}")  # Debug logging
 
                 processing_status[task_id]['progress'] = 50
 
                 # Generate speech
+                print("Calling tts_engine.save_to_file...")  # Debug logging
                 success = tts_engine.save_to_file(text, temp_path)
+                print(f"save_to_file returned: {success}")  # Debug logging
 
                 if success:
                     audio_files[task_id] = {
@@ -206,8 +211,10 @@ def speak_text():
                         'filename': 'speech.mp3'
                     }
                     processing_status[task_id] = {'status': 'completed', 'progress': 100}
+                    print("Speech processing completed successfully")  # Debug logging
                 else:
                     processing_status[task_id] = {'status': 'error', 'error': 'Failed to generate speech'}
+                    print("Speech processing failed")  # Debug logging
 
             except Exception as e:
                 print(f"Speech processing error: {e}")  # Debug logging

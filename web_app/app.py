@@ -166,9 +166,21 @@ def speak_text():
         if not text:
             return jsonify({'error': 'No text provided'}), 400
 
-        # Apply user settings
+        # Apply user settings with safety checks
         settings = session.get('settings', config_manager.get_default_settings())
-        tts_engine.apply_settings(settings)
+
+        # Ensure settings are not None
+        if settings is None:
+            settings = config_manager.get_default_settings()
+
+        # Clean up settings to remove any None values
+        clean_settings = {}
+        for key, value in settings.items():
+            if value is not None:
+                clean_settings[key] = value
+
+        print(f"Applying settings: {clean_settings}")  # Debug logging
+        tts_engine.apply_settings(clean_settings)
 
         # Generate unique task ID
         task_id = str(uuid.uuid4())
@@ -198,6 +210,7 @@ def speak_text():
                     processing_status[task_id] = {'status': 'error', 'error': 'Failed to generate speech'}
 
             except Exception as e:
+                print(f"Speech processing error: {e}")  # Debug logging
                 processing_status[task_id] = {'status': 'error', 'error': str(e)}
 
         # Start processing in background
@@ -208,6 +221,7 @@ def speak_text():
         return jsonify({'task_id': task_id, 'status': 'processing'})
 
     except Exception as e:
+        print(f"Speak text error: {e}")  # Debug logging
         return jsonify({'error': str(e)}), 500
 
 

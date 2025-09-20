@@ -93,9 +93,9 @@ class GTTSEngine:
 
     def apply_settings(self, settings: Dict[str, Union[int, float, str]]) -> None:
         """Apply multiple settings at once."""
-        if 'rate' in settings:
+        if 'rate' in settings and settings['rate'] is not None:
             self.set_rate(float(settings['rate']))
-        if 'voice_id' in settings:
+        if 'voice_id' in settings and settings['voice_id'] is not None:
             self.set_voice(int(settings['voice_id']))
         # Volume not supported by gTTS
 

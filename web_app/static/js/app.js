@@ -187,13 +187,18 @@ class TTSApp {
         const voiceSelect = document.getElementById('voice-select');
         const rateSlider = document.getElementById('rate-slider');
         const volumeSlider = document.getElementById('volume-slider');
-        
+
+        // Ensure we have valid values, not null/undefined
+        const voiceValue = voiceSelect?.value;
+        const rateValue = rateSlider?.value;
+        const volumeValue = volumeSlider?.value;
+
         this.settings = {
-            voice_id: parseInt(voiceSelect?.value || 0),
-            rate: parseInt(rateSlider?.value || 200),
-            volume: parseFloat(volumeSlider?.value || 0.9)
+            voice_id: voiceValue !== null && voiceValue !== undefined && voiceValue !== '' ? parseInt(voiceValue) : 0,
+            rate: rateValue !== null && rateValue !== undefined && rateValue !== '' ? parseInt(rateValue) : 200,
+            volume: volumeValue !== null && volumeValue !== undefined && volumeValue !== '' ? parseFloat(volumeValue) : 0.9
         };
-        
+
         try {
             await fetch('/api/settings', {
                 method: 'POST',

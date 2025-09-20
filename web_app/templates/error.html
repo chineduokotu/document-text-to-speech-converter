@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Error - Text-to-Speech{% endblock %}
+{% block header_title %}Error{% endblock %}
+
+{% block content %}
+<div class="tab-content active">
+    <div class="card">
+        <div class="card-header">
+            <h3>❌ Error</h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <strong>Sorry, something went wrong!</strong><br>
+                {{ error }}
+            </div>
+            
+            <div class="btn-group">
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-block">
+                    🏠 Go Home
+                </a>
+                <button onclick="window.history.back()" class="btn btn-secondary btn-block">
+                    ← Go Back
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3>🛠️ Troubleshooting</h3>
+        </div>
+        <div class="card-body">
+            <p>If you continue to experience issues, try:</p>
+            <ul>
+                <li>Refreshing the page</li>
+                <li>Clearing your browser cache</li>
+                <li>Using a different browser</li>
+                <li>Checking your internet connection</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

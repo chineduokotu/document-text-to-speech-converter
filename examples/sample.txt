@@ -1,0 +1,19 @@
+Welcome to the Text-to-Speech Automation Tool!
+
+This is a sample text file that you can use to test the text-to-speech functionality. 
+
+The tool supports various features:
+- Multiple document formats including PDF, DOCX, PPTX, and plain text
+- Customizable voice settings such as speech rate and volume
+- Both command-line and graphical user interfaces
+- Batch processing capabilities for multiple files
+- Configuration management to save your preferences
+
+You can use this file by running:
+python main.py --file examples/sample.txt
+
+Or load it through the GUI interface by clicking the Browse button and selecting this file.
+
+This sample text contains enough content to demonstrate the chunked processing feature, which breaks long texts into smaller segments for better speech control and user experience.
+
+Thank you for trying out the Text-to-Speech Automation Tool!

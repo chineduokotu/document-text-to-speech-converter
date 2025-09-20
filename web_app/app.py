@@ -320,18 +320,21 @@ def file_too_large(error):
     return jsonify({'error': 'File too large. Maximum size is 16MB.'}), 413
 
 
-# Cleanup task (run periodically)
-@app.before_first_request
+# Cleanup task (run periodically) - Flask 2.0+ compatible
 def setup_cleanup():
     """Setup periodic cleanup."""
     def cleanup_worker():
         while True:
             time.sleep(3600)  # Clean up every hour
             cleanup_old_files()
-    
+
     cleanup_thread = threading.Thread(target=cleanup_worker)
     cleanup_thread.daemon = True
     cleanup_thread.start()
+
+# Start cleanup on app context
+with app.app_context():
+    setup_cleanup()
 
 
 if __name__ == '__main__':

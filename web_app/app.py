@@ -58,9 +58,12 @@ def init_tts_engine():
     if tts_engine is None:
         try:
             tts_engine = TTSEngine()
+            print("✅ TTS Engine initialized successfully")
             return True
         except Exception as e:
-            print(f"Failed to initialize TTS engine: {e}")
+            print(f"⚠️ TTS Engine initialization failed: {e}")
+            print("📝 Document processing will still work without TTS")
+            tts_engine = None  # Explicitly set to None to indicate no TTS
             return False
     return True
 
@@ -101,18 +104,22 @@ def cleanup_old_files():
 @app.route('/')
 def index():
     """Main page."""
-    if not init_tts_engine():
-        return render_template('error.html', error="Failed to initialize TTS engine")
-    
+    # Try to initialize TTS, but don't fail if it doesn't work
+    init_tts_engine()
+
+    # Always show the main page - TTS is optional
     return render_template('index.html')
 
 
 @app.route('/api/voices')
 def get_voices():
     """API endpoint to get available voices."""
-    if not init_tts_engine():
-        return jsonify({'error': 'TTS engine not available'}), 500
-    
+    if not init_tts_engine() or tts_engine is None:
+        return jsonify({
+            'voices': [],
+            'message': 'TTS not configured - using default voice settings'
+        }), 200
+
     try:
         voices = tts_engine.get_available_voices()
         return jsonify({'voices': voices})
@@ -142,57 +149,60 @@ def settings():
 @app.route('/api/speak', methods=['POST'])
 def speak_text():
     """API endpoint to convert text to speech."""
-    if not init_tts_engine():
-        return jsonify({'error': 'TTS engine not available'}), 500
-    
+    if not init_tts_engine() or tts_engine is None:
+        return jsonify({
+            'error': 'TTS engine not available',
+            'message': 'Text-to-speech is not configured. Document processing still works perfectly!'
+        }), 200  # Return 200 instead of 500 to not break the app
+
     try:
         data = request.get_json()
         text = data.get('text', '').strip()
-        
+
         if not text:
             return jsonify({'error': 'No text provided'}), 400
-        
+
         # Apply user settings
         settings = session.get('settings', config_manager.get_default_settings())
         tts_engine.apply_settings(settings)
-        
+
         # Generate unique task ID
         task_id = str(uuid.uuid4())
-        
+
         # Start background processing
         processing_status[task_id] = {'status': 'processing', 'progress': 0}
-        
+
         def process_speech():
             try:
                 # Create temporary file for audio
-                with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_file:
+                with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
                     temp_path = temp_file.name
-                
+
                 processing_status[task_id]['progress'] = 50
-                
+
                 # Generate speech
                 success = tts_engine.save_to_file(text, temp_path)
-                
+
                 if success:
                     audio_files[task_id] = {
                         'file_path': temp_path,
                         'created': time.time(),
-                        'filename': 'speech.wav'
+                        'filename': 'speech.mp3'
                     }
                     processing_status[task_id] = {'status': 'completed', 'progress': 100}
                 else:
                     processing_status[task_id] = {'status': 'error', 'error': 'Failed to generate speech'}
-                    
+
             except Exception as e:
                 processing_status[task_id] = {'status': 'error', 'error': str(e)}
-        
+
         # Start processing in background
         thread = threading.Thread(target=process_speech)
         thread.daemon = True
         thread.start()
-        
+
         return jsonify({'task_id': task_id, 'status': 'processing'})
-        
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

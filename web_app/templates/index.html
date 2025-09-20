@@ -65,14 +65,25 @@
                 </div>
                 <div id="status-text" class="text-center mb-2">Processing...</div>
             </div>
-            
+
+            <!-- Audio Player (shown when processing completes) -->
+            <div id="audio-player-container" class="hidden">
+                <div class="audio-player">
+                    <h4>🎵 Audio Ready!</h4>
+                    <audio id="audio-player" controls preload="none">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <div class="audio-controls">
+                        <button id="play-btn" class="btn btn-primary">▶️ Play</button>
+                        <button id="download-btn" class="btn btn-success">📥 Download</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Action buttons -->
             <div class="btn-group">
                 <button id="speak-btn" class="btn btn-primary btn-block">
                     🎤 Speak
-                </button>
-                <button id="download-btn" class="btn btn-success btn-block" disabled>
-                    📥 Download Audio
                 </button>
             </div>
             

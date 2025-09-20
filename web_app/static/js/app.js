@@ -297,18 +297,27 @@ class TTSApp {
     
     onProcessingComplete() {
         clearInterval(this.statusCheckInterval);
-        
+
         const speakBtn = document.getElementById('speak-btn');
-        const downloadBtn = document.getElementById('download-btn');
-        
+        const audioPlayerContainer = document.getElementById('audio-player-container');
+        const audioPlayer = document.getElementById('audio-player');
+
         // Reset UI
         speakBtn.disabled = false;
         speakBtn.textContent = '🎤 Speak';
-        
-        // Enable download
-        downloadBtn.disabled = false;
-        
-        this.showAlert('Speech generated successfully! You can now download the audio.', 'success');
+
+        // Show audio player
+        if (audioPlayerContainer && audioPlayer) {
+            // Set audio source to the download URL
+            const audioUrl = `/api/download/${this.currentTask}`;
+            audioPlayer.src = audioUrl;
+            audioPlayerContainer.classList.remove('hidden');
+
+            // Scroll to audio player
+            audioPlayerContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        this.showAlert('🎵 Speech generated successfully! Audio is ready to play.', 'success');
     }
     
     onProcessingError(error) {
@@ -326,27 +335,27 @@ class TTSApp {
             this.showAlert('No audio file available for download', 'warning');
             return;
         }
-        
+
         try {
             const response = await fetch(`/api/download/${this.currentTask}`);
-            
+
             if (response.ok) {
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'speech.wav';
+                a.download = 'speech.mp3';  // Changed from .wav to .mp3 for gTTS
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
-                
+
                 this.showAlert('Audio file downloaded successfully!', 'success');
             } else {
                 const error = await response.json();
                 throw new Error(error.error || 'Download failed');
             }
-            
+
         } catch (error) {
             console.error('Download failed:', error);
             this.showAlert(error.message || 'Failed to download audio', 'danger');

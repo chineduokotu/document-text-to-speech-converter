@@ -382,8 +382,33 @@ textarea.form-control {
 .audio-player {
     width: 100%;
     margin: 1rem 0;
+    padding: 1rem;
+    background-color: var(--light-color);
     border-radius: var(--border-radius);
-    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.audio-player h4 {
+    margin: 0 0 1rem 0;
+    color: var(--success-color);
+    font-size: 1.1rem;
+}
+
+.audio-player audio {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius);
+}
+
+.audio-controls {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.audio-controls .btn {
+    flex: 1;
+    max-width: 150px;
 }
 
 /* Status Indicators */

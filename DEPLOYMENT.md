@@ -74,9 +74,23 @@ This means Render detected your project as Rust instead of Python. The `render.y
 4. Try redeploying after the files are committed
 
 ### If TTS doesn't work:
-Both platforms may have limitations with pyttsx3. Consider:
-1. Using persistent disks for TTS engines
-2. Switching to cloud TTS services (Google Cloud, AWS Polly)
+The app now includes Google Cloud Text-to-Speech integration. To enable TTS:
+
+#### Quick Setup (Free):
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing
+3. Enable "Cloud Text-to-Speech API"
+4. Create a service account with "Cloud Text-to-Speech User" role
+5. Download JSON credentials
+6. Upload `google-credentials.json` to your `src/` folder
+7. Redeploy your app
+
+#### Free Tier Limits:
+- **Google Cloud TTS**: 1 million characters/month free
+- **No credit card required** for free tier
+
+#### Without Google Cloud:
+The app will still work for document processing, just without TTS functionality.
 
 ### For mobile access:
 - Use the deployment URL on your mobile browser

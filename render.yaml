@@ -13,3 +13,5 @@ services:
         value: production
       - name: PORT
         value: 5000
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /opt/render/project/src/google-credentials.json

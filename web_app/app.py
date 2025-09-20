@@ -18,14 +18,18 @@ import uuid
 # Add parent src directory to path
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
-# Try to use Google Cloud TTS, fallback to pyttsx3 if not available
+# Try to use gTTS (free, no API keys), fallback to pyttsx3 if not available
 try:
-    from google_tts_engine import GoogleTTSEngine
-    TTSEngine = GoogleTTSEngine
-    print("Using Google Cloud Text-to-Speech")
+    from gtts_engine import GTTSEngine
+    TTSEngine = GTTSEngine
+    print("✅ Using gTTS (free Google Text-to-Speech - no API keys needed!)")
 except ImportError as e:
-    print(f"Google Cloud TTS not available ({e}), falling back to pyttsx3")
-    from tts_engine import TTSEngine
+    print(f"⚠️ gTTS not available ({e}), falling back to pyttsx3")
+    try:
+        from tts_engine import TTSEngine
+    except ImportError:
+        print("❌ No TTS engines available - app will work without voice")
+        TTSEngine = None
 
 from document_readers import UniversalDocumentReader
 from config_manager import ConfigManager

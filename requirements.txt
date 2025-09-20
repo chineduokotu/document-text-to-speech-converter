@@ -2,8 +2,8 @@
 Flask==2.3.3
 Werkzeug==2.3.7
 
-# Google Cloud Text-to-Speech (replaces pyttsx3 for cloud deployment)
-google-cloud-texttospeech>=2.14.1
+# gTTS - Free Google Text-to-Speech (no API keys needed!)
+gTTS>=2.5.0
 
 # Document Processing
 PyPDF2>=3.0.1

@@ -1,11 +1,13 @@
 services:
   - type: web
-    name: text-to-speech-app
-    runtime: python3
-    buildCommand: pip install -r requirements.txt
-    startCommand: python run_webapp.py
+    name: text-to-speech-webapp
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python start.py"
+    plan: free
+    autoDeploy: true
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.16
       - key: FLASK_ENV
         value: production
+      - key: PYTHON_VERSION
+        value: "3.9"

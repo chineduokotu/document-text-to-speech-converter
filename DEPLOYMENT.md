@@ -10,9 +10,12 @@
 - `render.yaml` - Configuration for Render deployment
 - `pyproject.toml` - Python project metadata
 - `setup.py` - Python package setup
+- `start.py` - Simple start script for Render
+- `Dockerfile` - Docker configuration as backup
 - `.gitignore` - Excludes unnecessary files
 - Updated `requirements.txt` - Clean dependencies list
 - Modified `run_webapp.py` - Uses PORT environment variable
+- Renamed `main.py` to `cli_main.py` - Avoids deployment confusion
 
 ## Option 1: Deploy to Railway
 

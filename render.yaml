@@ -1,11 +1,15 @@
+version: 1
 services:
-  - type: web
-    name: text-to-speech-webapp
+  - name: text-to-speech-app
+    type: web
     runtime: python3
-    buildCommand: pip install -r requirements.txt
-    startCommand: python start.py
+    build:
+      commands:
+        - pip install -r requirements.txt
+    start:
+      command: python app.py
     envVars:
-      - key: FLASK_ENV
+      - name: FLASK_ENV
         value: production
-      - key: PORT
+      - name: PORT
         value: 5000
